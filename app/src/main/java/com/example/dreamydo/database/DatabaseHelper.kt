@@ -41,6 +41,9 @@ class DatabaseHelper(context: Context) :
 
         db.execSQL(createCategoriesTable)
         db.execSQL(createTasksTable)
+
+        // Call the function to add dummy tasks
+        addDummyTasks(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -52,10 +55,22 @@ class DatabaseHelper(context: Context) :
         onCreate(db)
     }
 
-    // Add methods here for database operations such as inserting, updating, querying, and deleting data.
-    // You can include methods to manage categories and tasks.
+    private fun addDummyTasks(db: SQLiteDatabase) {
+        val dummyTasks = getDummyTasks()
 
-    // Example method to add a category
+        dummyTasks.forEach { task ->
+            val values = ContentValues()
+            values.put(KEY_TASK_NAME, task.taskName)
+            values.put(KEY_TASK_NOTES, task.taskNotes)
+            values.put(KEY_DUE_DATE, task.dueDate)
+            values.put(KEY_PRIORITY, task.priority)
+            values.put(KEY_IS_COMPLETED, if (task.isCompleted) 1 else 0)
+            values.put(KEY_CATEGORY_ID, task.categoryId)
+
+            db.insert(TABLE_TASKS, null, values)
+        }
+    }
+
     fun addCategory(categoryName: String): Long {
         val values = ContentValues()
         values.put(KEY_CATEGORY_NAME, categoryName)
@@ -67,7 +82,6 @@ class DatabaseHelper(context: Context) :
         return categoryId
     }
 
-    // Example method to add a task
     fun addTask(task: Task): Long {
         val values = ContentValues()
         values.put(KEY_TASK_NAME, task.taskName)
@@ -113,6 +127,32 @@ class DatabaseHelper(context: Context) :
         db.close()
 
         return tasks
+    }
+
+    // Inside the DatabaseHelper class
+    @SuppressLint("Range")
+    fun getTaskById(taskId: Int): Task? {
+        val db = readableDatabase
+        val selection = "$KEY_ID = ?"
+        val selectionArgs = arrayOf(taskId.toString())
+        val cursor = db.query(TABLE_TASKS, null, selection, selectionArgs, null, null, null)
+
+        var task: Task? = null
+        if (cursor.moveToFirst()) {
+            val taskName = cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME))
+            val taskNotes = cursor.getString(cursor.getColumnIndex(KEY_TASK_NOTES))
+            val dueDate = cursor.getString(cursor.getColumnIndex(KEY_DUE_DATE))
+            val priority = cursor.getInt(cursor.getColumnIndex(KEY_PRIORITY))
+            val isCompleted = cursor.getInt(cursor.getColumnIndex(KEY_IS_COMPLETED)) == 1
+            val categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORY_ID))
+
+            task = Task(taskId, taskName, taskNotes, dueDate, priority, isCompleted, categoryId)
+        }
+
+        cursor.close()
+        db.close()
+
+        return task
     }
 
     // Add more methods as per your requirements for updating, deleting, or querying data from the database.

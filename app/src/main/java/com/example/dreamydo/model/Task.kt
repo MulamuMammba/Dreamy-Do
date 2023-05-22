@@ -6,19 +6,12 @@ data class Task(
     val taskNotes: String?,
     val dueDate: String?,
     val priority: Int = 2,
-    val isCompleted: Boolean,
+    var isCompleted: Boolean,
     val categoryId: Int
-
 )
-
 /*
 When it comes to priority it's a three stage system
 1 - low priority
 2 - Normal priority (Default)
 3 - High priority
  */
-
-
-
-
-
