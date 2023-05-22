@@ -98,7 +98,6 @@ class DatabaseHelper(context: Context) :
         return taskId
     }
 
-    // Example method to get all tasks
     @SuppressLint("Range")
     fun getAllTasks(): List<Task> {
         val tasks = mutableListOf<Task>()
@@ -155,5 +154,19 @@ class DatabaseHelper(context: Context) :
         return task
     }
 
-    // Add more methods as per your requirements for updating, deleting, or querying data from the database.
+    fun updateTask(task: Task): Boolean {
+        val db = this.writableDatabase
+
+        val values = ContentValues()
+        values.put(KEY_TASK_NOTES, task.taskNotes)
+        values.put(KEY_IS_COMPLETED, task.isCompleted)
+
+        val affectedRows = db.update(
+            TABLE_TASKS, values, "$KEY_ID = ?", arrayOf(task.taskId.toString())
+        )
+
+        db.close()
+
+        return affectedRows > 0
+    }
 }

@@ -32,6 +32,7 @@ class Dashboard : AppCompatActivity() {
     }
 
     private fun tasksList() {
+        taskList = getTasks()
         val recyclerView: RecyclerView = findViewById(R.id.taskListRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = TaskListAdapter(taskList)

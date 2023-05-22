@@ -3,7 +3,7 @@ package com.example.dreamydo.model
 data class Task(
     val taskId: Int,
     val taskName: String,
-    val taskNotes: String?,
+    var taskNotes: String?,
     val dueDate: String?,
     val priority: Int = 2,
     var isCompleted: Boolean,
