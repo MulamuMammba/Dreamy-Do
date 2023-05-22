@@ -11,7 +11,7 @@ import com.example.dreamydo.R
 import com.example.dreamydo.model.Task
 import com.example.dreamydo.ui.TaskView
 
-class TaskListAdapter(private val taskList: List<Task>) :
+class TaskListAdapter(private var taskList: List<Task>) :
     RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

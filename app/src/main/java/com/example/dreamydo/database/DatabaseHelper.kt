@@ -169,4 +169,17 @@ class DatabaseHelper(context: Context) :
 
         return affectedRows > 0
     }
+
+    fun deleteTask(taskId: Int): Boolean {
+        val db = writableDatabase
+        val selection = "$KEY_ID = ?"
+        val selectionArgs = arrayOf(taskId.toString())
+
+        val deletedRows = db.delete(TABLE_TASKS, selection, selectionArgs)
+
+        db.close()
+
+        return deletedRows > 0
+    }
+
 }
